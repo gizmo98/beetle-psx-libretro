@@ -3525,7 +3525,7 @@ static void check_variables(bool startup)
          psx_gpu_dither_mode = DITHER_UPSCALED;
       else if (strcmp(var.value, "disabled") == 0)
          psx_gpu_dither_mode = DITHER_OFF;
-      if (strcmp(var.value, "high quality") == 0)
+      else if (strcmp(var.value, "high quality") == 0)
          psx_gpu_dither_mode = DITHER_HQ;
    }
    else
