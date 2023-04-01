@@ -27,7 +27,8 @@ enum dither_mode
 {
    DITHER_NATIVE   = 0,
    DITHER_UPSCALED,
-   DITHER_OFF
+   DITHER_OFF,
+   DITHER_HQ
 };
 
 struct tri_vertex
@@ -217,6 +218,7 @@ struct PS_GPU
 
    uint8_t DitherLUT[4][4][512]; // Y, X, 8-bit source value(256 extra for saturation)
 
+   uint8_t HQDitherLUT[3][32][32][512]; // Y, X, RED, 8-bit source value(256 extra for saturation)
    /*
    VRAM has to be a ptr type or else we have to rely on smartcode void* shenanigans to
    wrestle a variable-sized struct.

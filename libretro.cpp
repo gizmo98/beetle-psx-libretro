@@ -2004,6 +2004,9 @@ static void InitCommon(std::vector<CDIF *> *_CDInterfaces, const bool EmulateMem
          break;
       case DITHER_OFF:
          break;
+      case DITHER_HQ:
+         GPU_set_dither_upscale_shift(psx_gpu_upscale_shift);
+         break;
    }
 
    PGXP_SetModes(psx_pgxp_mode | psx_pgxp_vertex_caching | psx_pgxp_texture_correction | psx_pgxp_nclip);
@@ -3522,6 +3525,8 @@ static void check_variables(bool startup)
          psx_gpu_dither_mode = DITHER_UPSCALED;
       else if (strcmp(var.value, "disabled") == 0)
          psx_gpu_dither_mode = DITHER_OFF;
+      if (strcmp(var.value, "high quality") == 0)
+         psx_gpu_dither_mode = DITHER_HQ;
    }
    else
       psx_gpu_dither_mode = DITHER_NATIVE;
@@ -4543,6 +4548,9 @@ void retro_run(void)
             GPU_set_dither_upscale_shift(0);
             break;
          case DITHER_OFF:
+            break;
+         case DITHER_HQ:
+            GPU_set_dither_upscale_shift(psx_gpu_upscale_shift);
             break;
       }
 

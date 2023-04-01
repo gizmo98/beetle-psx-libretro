@@ -144,9 +144,17 @@ static void DrawLine(PS_GPU *gpu, line_point *points)
 
          if(DitherEnabled(gpu))
          {
-            uint8_t *dither_offset = gpu->DitherLUT[y & 3][x & 3];
-            pix = 0x8000 | (dither_offset[r] << 0) | (dither_offset[g] << 5) | 
-               (dither_offset[b] << 10);
+            if(psx_gpu_dither_mode == DITHER_HQ)
+            {
+               pix = 0x8000 | (gpu->DitherLUT[0][y & 0x1F][x & 0x1F][r] << 0) | (gpu->DitherLUT[0][y & 0x1F][x & 0x1F][g] << 5) | 
+                  (gpu->DitherLUT[0][y & 0x1F][x & 0x1F][b] << 10);
+            }
+            else
+            {
+               uint8_t *dither_offset = gpu->DitherLUT[y & 3][x & 3];
+               pix = 0x8000 | (ither_offset[r] << 0) | (dither_offset[g] << 5) | 
+                  (dither_offset[b] << 10);
+            }
          }
          else
          {

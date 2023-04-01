@@ -170,6 +170,12 @@ static INLINE void DrawSpan(PS_GPU *gpu, int y, const int32 x_start, const int32
    uint32 dither_x = (x >> gpu->dither_upscale_shift) & 3;
    uint32 dither_y = (y >> gpu->dither_upscale_shift) & 3;
 
+   if(psx_gpu_dither_mode == DITHER_HQ)
+   {
+       dither_x = (x >> gpu->dither_upscale_shift) & 0x1F;
+       dither_y = (y >> gpu->dither_upscale_shift) & 0x1F;
+   }
+
    //assert(x >= ClipX0 && x <= ClipX1);
 
    if(textured)
@@ -187,7 +193,7 @@ static INLINE void DrawSpan(PS_GPU *gpu, int y, const int32 x_start, const int32
        dither_y = 2;
       }
 
-      uint8_t *dither_offset = gpu->DitherLUT[dither_y][dither_x];
+      uint8_t *dither_offset = gpu->DitherLUT[dither_y & 3][dither_x & 3];
       fbw = ModTexel(dither_offset, fbw, r, g, b);
      }
      PlotPixel<BlendMode, MaskEval_TA, true>(gpu, x, y, fbw);
@@ -197,11 +203,20 @@ static INLINE void DrawSpan(PS_GPU *gpu, int y, const int32 x_start, const int32
    {
     uint16 pix = 0x8000;
 
-    if(gouraud && DitherEnabled(gpu))
-    {
-     pix |= gpu->DitherLUT[dither_y][dither_x][r] << 0;
-     pix |= gpu->DitherLUT[dither_y][dither_x][g] << 5;
-     pix |= gpu->DitherLUT[dither_y][dither_x][b] << 10;
+   if(gouraud && DitherEnabled(gpu))
+   {
+      if(psx_gpu_dither_mode == DITHER_HQ)
+      {
+         pix |= gpu->HQDitherLUT[0][dither_y][dither_x][r] << 0;
+         pix |= gpu->HQDitherLUT[1][dither_y][dither_x][g] << 5;
+         pix |= gpu->HQDitherLUT[2][dither_y][dither_x][b] << 10;
+      }
+      else
+      {
+         pix |= gpu->DitherLUT[dither_y][dither_x][r] << 0;
+         pix |= gpu->DitherLUT[dither_y][dither_x][g] << 5;
+         pix |= gpu->DitherLUT[dither_y][dither_x][b] << 10;
+      }
     }
     else
     {
