@@ -115,6 +115,8 @@ static INLINE void PlotNativePixel(PS_GPU *gpu, int32_t x, int32_t y, uint16_t f
 
 #define ModTexel(dither_offset, texel, r, g, b) ((texel & 0x8000) | (dither_offset[(((texel & 0x1F)  * (r))   >> (5 - 1))] << 0) | (dither_offset[(((texel & 0x3E0)  * (g))  >> (10 - 1))] << 5) | (dither_offset[(((texel & 0x7C00) * (b)) >> (15 - 1))] << 10))
 
+#define ModTexelRGB(dither_offset_r,dither_offset_g,dither_offset_b, texel, r, g, b) ((texel & 0x8000) | (dither_offset_r[(((texel & 0x1F)  * (r))   >> (5 - 1))] << 0) | (dither_offset_g[(((texel & 0x3E0)  * (g))  >> (10 - 1))] << 5) | (dither_offset_b[(((texel & 0x7C00) * (b)) >> (15 - 1))] << 10))
+
 template<uint32 TexMode_TA>
 static INLINE void Update_CLUT_Cache(PS_GPU *g, uint16 raw_clut)
 {

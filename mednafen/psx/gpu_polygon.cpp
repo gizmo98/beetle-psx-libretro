@@ -193,8 +193,18 @@ static INLINE void DrawSpan(PS_GPU *gpu, int y, const int32 x_start, const int32
        dither_y = 2;
       }
 
-      uint8_t *dither_offset = gpu->DitherLUT[dither_y & 3][dither_x & 3];
-      fbw = ModTexel(dither_offset, fbw, r, g, b);
+      if(psx_gpu_dither_mode == DITHER_HQ)
+      {
+         uint8_t *dither_offset_r = gpu->HQDitherLUT[0][dither_y][dither_x];
+         uint8_t *dither_offset_g = gpu->HQDitherLUT[1][dither_y][dither_x];
+         uint8_t *dither_offset_b = gpu->HQDitherLUT[2][dither_y][dither_x];
+         fbw = ModTexelRGB(dither_offset_r, dither_offset_g, dither_offset_b, fbw, r, g, b);
+      }
+      else
+      {
+         uint8_t *dither_offset = gpu->DitherLUT[dither_y][dither_x];
+         fbw = ModTexel(dither_offset, fbw, r, g, b);
+      }
      }
      PlotPixel<BlendMode, MaskEval_TA, true>(gpu, x, y, fbw);
     }
