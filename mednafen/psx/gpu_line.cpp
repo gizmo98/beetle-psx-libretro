@@ -144,7 +144,7 @@ static void DrawLine(PS_GPU *gpu, line_point *points)
 
          if(DitherEnabled(gpu))
          {
-            uint8_t *dither_offset = gpu->DitherLUT[y & 3][x & 3];
+            uint8_t *dither_offset = gpu->DitherLUT[y & 15][x & 15];
             pix = 0x8000 | (dither_offset[r] << 0) | (dither_offset[g] << 5) | 
                (dither_offset[b] << 10);
          }

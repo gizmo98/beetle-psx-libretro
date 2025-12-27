@@ -167,8 +167,8 @@ static INLINE void DrawSpan(PS_GPU *gpu, int y, const int32 x_start, const int32
    const uint32 r = ig.r >> (COORD_FBS + COORD_POST_PADDING);
    const uint32 g = ig.g >> (COORD_FBS + COORD_POST_PADDING);
    const uint32 b = ig.b >> (COORD_FBS + COORD_POST_PADDING);
-   uint32 dither_x = (x >> gpu->dither_upscale_shift) & 3;
-   uint32 dither_y = (y >> gpu->dither_upscale_shift) & 3;
+   uint32 dither_x = (x >> gpu->dither_upscale_shift) & 15;
+   uint32 dither_y = (y >> gpu->dither_upscale_shift) & 15;
 
    //assert(x >= ClipX0 && x <= ClipX1);
 
