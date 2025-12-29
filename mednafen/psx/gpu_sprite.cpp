@@ -98,7 +98,10 @@ static void DrawSprite(PS_GPU *gpu, int32_t x_arg, int32_t y_arg, int32_t w, int
                   if(TexMult)
                   {
                      uint8_t *dither_offset = gpu->DitherLUT[2][3];
-                     fbw = ModTexel(dither_offset, fbw, r, g, b);
+                     uint8_t *dither_offset_r = gpu->DitherLUTR[2][3];
+                     uint8_t *dither_offset_g = gpu->DitherLUTG[2][3];
+                     uint8_t *dither_offset_b = gpu->DitherLUTB[2][3];
+                     fbw = ModTexel2(dither_offset_r, dither_offset_g, dither_offset_b, fbw, r, g, b);
                   }
                   PlotNativePixel<BlendMode, MaskEval_TA, true>(gpu, x, y, fbw);
                }

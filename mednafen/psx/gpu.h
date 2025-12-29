@@ -216,6 +216,9 @@ struct PS_GPU
    int LineVisFirst, LineVisLast;
 
    uint8_t DitherLUT[16][16][512]; // Y, X, 8-bit source value(256 extra for saturation)
+   uint8_t DitherLUTR[16][16][512]; // Y, X, 8-bit source value(256 extra for saturation)
+   uint8_t DitherLUTG[16][16][512]; // Y, X, 8-bit source value(256 extra for saturation)
+   uint8_t DitherLUTB[16][16][512]; // Y, X, 8-bit source value(256 extra for saturation)
 
    /*
    VRAM has to be a ptr type or else we have to rely on smartcode void* shenanigans to

@@ -188,7 +188,11 @@ static INLINE void DrawSpan(PS_GPU *gpu, int y, const int32 x_start, const int32
       }
 
       uint8_t *dither_offset = gpu->DitherLUT[dither_y][dither_x];
-      fbw = ModTexel(dither_offset, fbw, r, g, b);
+      uint8_t *dither_offset_r = gpu->DitherLUTR[dither_y][dither_x];
+      uint8_t *dither_offset_g = gpu->DitherLUTG[dither_y][dither_x];
+      uint8_t *dither_offset_b = gpu->DitherLUTB[dither_y][dither_x];
+
+      fbw = ModTexel2(dither_offset_r, dither_offset_g, dither_offset_b, fbw, r, g, b);
      }
      PlotPixel<BlendMode, MaskEval_TA, true>(gpu, x, y, fbw);
     }
@@ -199,9 +203,9 @@ static INLINE void DrawSpan(PS_GPU *gpu, int y, const int32 x_start, const int32
 
     if(gouraud && DitherEnabled(gpu))
     {
-     pix |= gpu->DitherLUT[dither_y][dither_x][r] << 0;
-     pix |= gpu->DitherLUT[dither_y][dither_x][g] << 5;
-     pix |= gpu->DitherLUT[dither_y][dither_x][b] << 10;
+     pix |= gpu->DitherLUTR[dither_y][dither_x][r] << 0;
+     pix |= gpu->DitherLUTG[dither_y][dither_x][g] << 5;
+     pix |= gpu->DitherLUTB[dither_y][dither_x][b] << 10;
     }
     else
     {
