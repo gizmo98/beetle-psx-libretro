@@ -167,8 +167,12 @@ static INLINE void DrawSpan(PS_GPU *gpu, int y, const int32 x_start, const int32
    const uint32 r = ig.r >> (COORD_FBS + COORD_POST_PADDING);
    const uint32 g = ig.g >> (COORD_FBS + COORD_POST_PADDING);
    const uint32 b = ig.b >> (COORD_FBS + COORD_POST_PADDING);
-   uint32 dither_x = (x >> gpu->dither_upscale_shift) & 3;
-   uint32 dither_y = (y >> gpu->dither_upscale_shift) & 3;
+   uint32 dither_r_x = (x >> gpu->dither_upscale_shift) & 3;
+   uint32 dither_r_y = (y >> gpu->dither_upscale_shift) & 3;
+   uint32 dither_g_x = ((x + 1) >> gpu->dither_upscale_shift) & 3;
+   uint32 dither_g_y = ((y + 2) >> gpu->dither_upscale_shift) & 3;
+   uint32 dither_b_x = ((x + 2) >> gpu->dither_upscale_shift) & 3;
+   uint32 dither_b_y = ((y + 1) >> gpu->dither_upscale_shift) & 3;
 
    //assert(x >= ClipX0 && x <= ClipX1);
 
@@ -183,12 +187,19 @@ static INLINE void DrawSpan(PS_GPU *gpu, int y, const int32 x_start, const int32
 
       if(!DitherEnabled(gpu))
       {
-       dither_x = 3;
-       dither_y = 2;
+       dither_r_x = 3;
+       dither_r_y = 2;
+       dither_g_x = 3;
+       dither_g_y = 2;
+       dither_b_x = 3;
+       dither_b_y = 2;
       }
 
-      uint8_t *dither_offset = gpu->DitherLUT[dither_y][dither_x];
-      fbw = ModTexel(dither_offset, fbw, r, g, b);
+      uint8_t *dither_offset_r = gpu->DitherLUT[dither_r_y][dither_r_x];
+      uint8_t *dither_offset_g = gpu->DitherLUT[dither_g_y][dither_g_x];
+      uint8_t *dither_offset_b = gpu->DitherLUT[dither_b_y][dither_b_x];
+   
+      fbw = ModTexelRGB(dither_offset_r, dither_offset_g, dither_offset_b, fbw, r, g, b);
      }
      PlotPixel<BlendMode, MaskEval_TA, true>(gpu, x, y, fbw);
     }
@@ -199,9 +210,9 @@ static INLINE void DrawSpan(PS_GPU *gpu, int y, const int32 x_start, const int32
 
     if(gouraud && DitherEnabled(gpu))
     {
-     pix |= gpu->DitherLUT[dither_y][dither_x][r] << 0;
-     pix |= gpu->DitherLUT[dither_y][dither_x][g] << 5;
-     pix |= gpu->DitherLUT[dither_y][dither_x][b] << 10;
+     pix |= gpu->DitherLUT[dither_r_y][dither_r_x][r] << 0;
+     pix |= gpu->DitherLUT[dither_g_y][dither_g_x][g] << 5;
+     pix |= gpu->DitherLUT[dither_b_y][dither_b_x][b] << 10;
     }
     else
     {
